@@ -8,10 +8,10 @@ WORKDIR /app
 # Copy tsconfig for TypeScript compilation
 COPY tsconfig.json ./
 
-ENV CACHE_PATH=/root/.cache
+ENV CACHE_PATH=/root/.cache/npm
 
 # Create minimal package.json and install ONLY build dependencies
-RUN --mount=type=cache,id=s/${RAILWAY_SERVICE_ID}-${CACHE_PATH},target=${CACHE_PATH}/.npm \
+RUN --mount=type=cache,id=s/${RAILWAY_SERVICE_ID}-${CACHE_PATH},target=${CACHE_PATH} \
     echo '{}' > package.json && \
     npm install --no-save typescript@^5.8.3 @types/node@^22.15.30 @types/express@^5.0.3 \
         @modelcontextprotocol/sdk@^1.12.1 dotenv@^16.5.0 express@^5.1.0 axios@^1.10.0 \
@@ -35,7 +35,7 @@ RUN apk add --no-cache curl && \
 COPY package.runtime.json package.json
 
 # Install runtime dependencies with cache mount
-RUN --mount=type=cache,id=s/${RAILWAY_SERVICE_ID}-${CACHE_PATH},target=${CACHE_PATH}/.npm \
+RUN --mount=type=cache,id=s/${RAILWAY_SERVICE_ID}-${CACHE_PATH},target=${CACHE_PATH} \
     npm install --production --no-audit --no-fund
 
 # Copy built application
